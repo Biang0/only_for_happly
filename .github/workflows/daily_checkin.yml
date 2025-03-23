@@ -17,7 +17,6 @@ jobs:
 
       - name: List files in the current directory
         run: |
-          echo "Current directory: $(pwd)"
           ls -R
 
       - name: Set up Python
@@ -79,4 +78,4 @@ jobs:
         run: python tianyi_cloud_checkin.py
 
       - name: Run NvShengSheQu Check-in
-        run: python nvshengshequ_checkin.py  
+        run: python nvshengshequ_checkin.py
