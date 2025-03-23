@@ -15,6 +15,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: List files in the current directory
+        run: |
+          ls -R
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -37,7 +41,7 @@ jobs:
           # 推送加
           plustoken: ${{ secrets.PLUSTOKEN }}
           # 贴吧
-          tieba_cookie: ${{ secrets.TIEBA_COOKIE }}
+          tieback: ${{ secrets.TIEBA_COOKIE }}  # 修改为 tieback，与脚本中变量名一致
           # iGot
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
           # go-cqhttp
@@ -63,12 +67,15 @@ jobs:
 
       - name: Run Tieba Check-in
         run: |
-          import json
+          import os
           from only_for_happly.tieba import Tieba
-          check_items = [{"cookie": "${{ secrets.TIEBA_COOKIE }}"}]
-          tieba = Tieba(check_items)
-          msg = tieba.main()
-          print(msg)
+          s = os.getenv("tieback").split('#')
+          for i in range(len(s)):
+              item = s[i]
+              _check_items = [{"cookie": item}]
+              tieba = Tieba(check_items=_check_items)
+              msg = tieba.main()
+              print(msg)
         shell: python
 
       - name: Run YidianWanxiang Check-in
