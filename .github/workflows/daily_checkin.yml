@@ -41,7 +41,7 @@ jobs:
           # 推送加
           plustoken: ${{ secrets.PLUSTOKEN }}
           # 贴吧
-          tieback: ${{ secrets.TIEBA_COOKIE }}  # 修改为 tieback，与脚本中变量名一致
+          tieback: ${{ secrets.TIEBA_COOKIE }}
           # iGot
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
           # go-cqhttp
@@ -83,15 +83,32 @@ jobs:
 
       - name: Run Sina Weibo Topic Check-in
         run: |
-          # 这里需要根据实际情况完善微博超话签到的运行代码
-          # 因为提供的代码片段不完整，无法直接运行
-          echo "Weibo topic check-in is not fully implemented yet."
+          import os
+          from only_for_happly.Weibo import sign_topic
+          # 这里需要根据实际情况设置 title, action, params, headers
+          # 示例：
+          title = "示例超话标题"
+          action = "示例action字符串"
+          params = {}
+          headers = {}
+          message = sign_topic(title, action, params, headers)
+          print(message)
 
       - name: Run Tianyi Cloud Check-in
-        run: python only_for_happly/tyyun.py
+        run: |
+          import os
+          from only_for_happly.tyyun import main
+          global ty_username, ty_password
+          ty_username = os.getenv("ty_username")
+          ty_password = os.getenv("ty_password")
+          main()
 
       - name: Run NvShengSheQu Check-in
         run: |
-          # 这里需要根据实际情况完善女生社区签到的运行代码
-          # 因为提供的代码片段不完整，无法直接运行
-          echo "NvShengSheQu check-in is not fully implemented yet."
+          import os
+          from only_for_happly.nfsq import do_task, goods_simple
+          apitoken = os.getenv("nfsq_apitoken")
+          taskId = "示例任务ID"
+          do_task(taskId, apitoken)
+          goods = goods_simple(apitoken)
+          print(goods)
