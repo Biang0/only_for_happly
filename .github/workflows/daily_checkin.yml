@@ -1,0 +1,90 @@
+name: Daily Check-in Workflow
+
+on:
+  # 每天北京时间 03:00 执行任务
+  schedule:
+    - cron: '0 19 * * *'
+  # 也可以手动触发
+  workflow_dispatch:
+
+jobs:
+  checkin:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Set environment variables
+        env:
+          # 阿里云盘
+          ali_refresh_token: ${{ secrets.ALI_REFRESH_TOKEN }}
+          # 蜜堂
+          mtau: ${{ secrets.MTAU }}
+          # 一点万象
+          ydwx_deviceParams: ${{ secrets.YDWX_DEVICE_PARAMS }}
+          ydwx_token: ${{ secrets.YDWX_TOKEN }}
+          # 推送加
+          plustoken: ${{ secrets.PLUSTOKEN }}
+          # 贴吧
+          tieba_cookie: ${{ secrets.TIEBA_COOKIE }}
+          # iGot
+          IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
+          # go-cqhttp
+          GOBOT_URL: ${{ secrets.GOBOT_URL }}
+          GOBOT_QQ: ${{ secrets.GOBOT_QQ }}
+          GOBOT_TOKEN: ${{ secrets.GOBOT_TOKEN }}
+          # gotify
+          GOTIFY_URL: ${{ secrets.GOTIFY_URL }}
+          GOTIFY_TOKEN: ${{ secrets.GOTIFY_TOKEN }}
+          # 天翼云
+          ty_username: ${{ secrets.TY_USERNAME }}
+          ty_password: ${{ secrets.TY_PASSWORD }}
+          # 女生社区
+          nfsq_apitoken: ${{ secrets.NFSQ_APITOKEN }}
+        run: |
+          # 这里可以根据需要添加额外的环境变量设置或配置步骤
+
+      - name: Run Alibaba Cloud Drive Check-in
+        run: python only_for_happly/aliyun.py
+
+      - name: Run MiTang Check-in
+        run: python only_for_happly/backup/mt.py
+
+      - name: Run Tieba Check-in
+        run: |
+          import json
+          from only_for_happly.tieba import Tieba
+          check_items = [{"cookie": "${{ secrets.TIEBA_COOKIE }}"}]
+          tieba = Tieba(check_items)
+          msg = tieba.main()
+          print(msg)
+        shell: python
+
+      - name: Run YidianWanxiang Check-in
+        run: python only_for_happly/ydwx.py
+
+      - name: Run Sina Weibo Topic Check-in
+        run: |
+          # 这里需要根据实际情况完善微博超话签到的运行代码
+          # 因为提供的代码片段不完整，无法直接运行
+          echo "Weibo topic check-in is not fully implemented yet."
+
+      - name: Run Tianyi Cloud Check-in
+        run: python only_for_happly/tyyun.py
+
+      - name: Run NvShengSheQu Check-in
+        run: |
+          # 这里需要根据实际情况完善女生社区签到的运行代码
+          # 因为提供的代码片段不完整，无法直接运行
+          echo "NvShengSheQu check-in is not fully implemented yet."
