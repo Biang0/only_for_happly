@@ -60,22 +60,55 @@ jobs:
           # 这里可以根据需要添加额外的环境变量设置或配置步骤
 
       - name: Run Alibaba Cloud Drive Check-in
-        run: python aliyun.py
+        run: python aliyun.py  # 确保路径正确
 
       - name: Run MiTang Check-in
-        run: python backup/mt.py
+        run: python backup/mt.py  # 确保路径正确
 
       - name: Run Tieba Check-in
-        run: python tieba_checkin.py
+        run: |
+          import os
+          from tieba import Tieba  # 确保路径正确
+          s = os.getenv("tieback").split('#')
+          for i in range(len(s)):
+              item = s[i]
+              _check_items = [{"cookie": item}]
+              tieba = Tieba(check_items=_check_items)
+              msg = tieba.main()
+              print(msg)
+        shell: python
 
       - name: Run YidianWanxiang Check-in
-        run: python ydwx.py
+        run: python ydwx.py  # 确保路径正确
 
       - name: Run Sina Weibo Topic Check-in
-        run: python weibo_checkin.py
+        run: |
+          import os
+          from Weibo import sign_topic  # 确保路径正确
+          # 这里需要根据实际情况设置 title, action, params, headers
+          # 示例：
+          title = "示例超话标题"
+          action = "示例action字符串"
+          params = {}
+          headers = {}
+          message = sign_topic(title, action, params, headers)
+          print(message)
 
       - name: Run Tianyi Cloud Check-in
-        run: python tianyi_cloud_checkin.py
+        run: |
+          import os
+          from tyyun import main  # 确保路径正确
+          global ty_username, ty_password
+          ty_username = os.getenv("ty_username")
+          ty_password = os.getenv("ty_password")
+          main()
 
       - name: Run NvShengSheQu Check-in
-        run: python nvshengshequ_checkin.py
+        run: |
+          import os
+          from nfsq import do_task, goods_simple  # 确保路径正确
+          apitoken = os.getenv("nfsq_apitoken")
+          taskId = "示例任务ID"
+          do_task(taskId, apitoken)
+          goods = goods_simple(apitoken)
+          print(goods)
