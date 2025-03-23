@@ -17,6 +17,7 @@ jobs:
 
       - name: List files in the current directory
         run: |
+          echo "Current directory: $(pwd)"
           ls -R
 
       - name: Set up Python
@@ -60,55 +61,22 @@ jobs:
           # 这里可以根据需要添加额外的环境变量设置或配置步骤
 
       - name: Run Alibaba Cloud Drive Check-in
-        run: python only_for_happly/aliyun.py
+        run: python aliyun.py
 
       - name: Run MiTang Check-in
-        run: python only_for_happly/backup/mt.py
+        run: python backup/mt.py
 
       - name: Run Tieba Check-in
-        run: |
-          import os
-          from only_for_happly.tieba import Tieba
-          s = os.getenv("tieback").split('#')
-          for i in range(len(s)):
-              item = s[i]
-              _check_items = [{"cookie": item}]
-              tieba = Tieba(check_items=_check_items)
-              msg = tieba.main()
-              print(msg)
-        shell: python
+        run: python tieba_checkin.py
 
       - name: Run YidianWanxiang Check-in
-        run: python only_for_happly/ydwx.py
+        run: python ydwx.py
 
       - name: Run Sina Weibo Topic Check-in
-        run: |
-          import os
-          from only_for_happly.Weibo import sign_topic
-          # 这里需要根据实际情况设置 title, action, params, headers
-          # 示例：
-          title = "示例超话标题"
-          action = "示例action字符串"
-          params = {}
-          headers = {}
-          message = sign_topic(title, action, params, headers)
-          print(message)
+        run: python weibo_checkin.py
 
       - name: Run Tianyi Cloud Check-in
-        run: |
-          import os
-          from only_for_happly.tyyun import main
-          global ty_username, ty_password
-          ty_username = os.getenv("ty_username")
-          ty_password = os.getenv("ty_password")
-          main()
+        run: python tianyi_cloud_checkin.py
 
       - name: Run NvShengSheQu Check-in
-        run: |
-          import os
-          from only_for_happly.nfsq import do_task, goods_simple
-          apitoken = os.getenv("nfsq_apitoken")
-          taskId = "示例任务ID"
-          do_task(taskId, apitoken)
-          goods = goods_simple(apitoken)
-          print(goods)
+        run: python nvshengshequ_checkin.py  
